@@ -35,8 +35,7 @@ window.onload = function() {
                 const opciones = {
                     timeZone: 'America/Bogota',
                     hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
+                    minute: '2-digit'
                 };
                 const fechaColombia = new Intl.DateTimeFormat('es-CO', opciones).format(now);
                 fechaElement.textContent = fechaColombia;
