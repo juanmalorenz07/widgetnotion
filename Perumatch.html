@@ -25,34 +25,33 @@
         let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
         let elementoFecha = document.querySelector('#fsUpcomingDate');
 
+        if (elementoFecha && elementoFecha.textContent.trim() !== '') {
+            let partesFecha = elementoFecha.textContent.match(/(\d{1,2})\/(\d{1,2})/); // Extraer día y mes "4/6"
+            if (partesFecha) {
+                let fecha = new Date(Date.UTC(2025, parseInt(partesFecha[2]) - 1, parseInt(partesFecha[1])));
+
+                // Ajustar la fecha según la zona horaria de Colombia
+                fecha.setUTCHours(fecha.getUTCHours() - 5);
+
+                let opcionesFecha = { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Bogota' };
+                elementoFecha.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+            }
+        }
+
         elementosHora.forEach(element => {
             let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); // Extraer la hora correctamente
             if (horaTexto) {
                 let partesHora = horaTexto[0].split(':');
                 let fecha = new Date();
                 fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
-                fecha.setHours(fecha.getHours() - 5); // Ajuste de GMT a Colombia (GMT-5)
 
-                let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true };
+                // Ajustar la hora según la zona horaria de Colombia
+                fecha.setHours(fecha.getHours() - 5);
+
+                let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Bogota' };
                 element.textContent = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
             }
         });
-
-        // Ajustar la fecha si cambia por el huso horario
-        if (elementoFecha && elementoFecha.textContent.trim() !== '') {
-            let partesFecha = elementoFecha.textContent.match(/(\d{1,2})\/(\d{1,2}) (\w+)/); // Extraer fecha en formato "4/6 Wednesday"
-            if (partesFecha) {
-                let fecha = new Date();
-                fecha.setUTCDate(parseInt(partesFecha[1]));
-                fecha.setUTCMonth(parseInt(partesFecha[2]) - 1); // Mes en JavaScript empieza en 0
-                fecha.setHours(fecha.getHours() - 5); // Ajuste de GMT a Colombia (GMT-5)
-
-                let opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
-                let nuevaFecha = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-
-                elementoFecha.textContent = nuevaFecha.replace('.', ''); // Eliminar punto en "jun." si lo hay
-            }
-        }
     }
 
     setTimeout(ajustarHorario, 3000);
