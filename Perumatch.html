@@ -21,41 +21,53 @@
 
     fsUpcoming('params', { teamID: 8673, lang: 'es' });
 
-   function ajustarFechaHora() {
-    let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
-    let elementosFecha = document.querySelectorAll('[id*="fsUpcomingDate"], .fs-fixture-date'); 
+   window.onload = function() {
+    setTimeout(function() {
+        const fechaElement = document.querySelector('#fsUpcomingTime');
+        const fechaSpanElement = document.querySelector('#fsUpcomingDate');
+        
+        if (fechaElement) {
+            let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
+            const fechaParts = fechaGMT.split(':');
+            const now = new Date();
+            now.setHours(fechaParts[0]);
+            now.setMinutes(fechaParts[1]);
+            now.setSeconds(0);
+            now.setHours(now.getHours() - 5);  // Ajuste a Colombia (GMT-5)
 
-    elementosHora.forEach(element => {
-        let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); 
-
-        if (horaTexto) {
-            let partesHora = horaTexto[0].split(':');
-            let fecha = new Date();
-            fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
-            fecha.setHours(fecha.getHours() - 5); // Ajuste a Colombia (GMT-5)
-
-            let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true };
-            element.textContent = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
+            if (!isNaN(now)) {
+                const opciones = {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                const fechaColombia = new Intl.DateTimeFormat('es-CO', opciones).format(now);
+                fechaElement.textContent = fechaColombia;
+            }
         }
-    });
 
-    elementosFecha.forEach(element => {
-        let fechaTexto = element.textContent.trim().match(/\d{1,2}\/\d{1,2}/); 
+        if (fechaSpanElement) {
+            let fechaGMT = fechaSpanElement.textContent.trim();
+            const partesFecha = fechaGMT.split(' ');
+            const fechaParts = partesFecha[0].split('/');  // Formato dd/mm
+            const fecha = new Date();
+            fecha.setDate(fechaParts[0]);
+            fecha.setMonth(fechaParts[1] - 1);  // Los meses en JavaScript son 0-indexed
+            fecha.setFullYear(2025);  // Cambiar según el año si es necesario
 
-        if (fechaTexto) {
-            let partesFecha = fechaTexto[0].split('/');
-            let fecha = new Date();
-            fecha.setUTCDate(parseInt(partesFecha[0]));
-            fecha.setUTCMonth(parseInt(partesFecha[1]) - 1);
-            fecha.setHours(fecha.getHours() - 5); // Ajuste de zona horaria
+            fecha.setHours(fecha.getHours() - 5);
 
-            let opcionesFecha = { day: '2-digit', month: 'long', year: 'numeric' };
-            element.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+            if (!isNaN(fecha)) {
+                const opcionesFecha = {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                };
+                const fechaColombia = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+                fechaSpanElement.textContent = fechaColombia;
+            }
         }
-    });
-}
-
-    setTimeout(ajustarHorario, 3000);
-    </script>
+    }, 2000);
+};
+</script>
 </body>
 </html>
