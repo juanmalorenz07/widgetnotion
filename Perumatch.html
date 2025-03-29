@@ -1,62 +1,15 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximos Partidos - Perú</title>
-</head>
-<body>
-    <div id="fs-upcoming"></div>
-    <script>
-    (function(w,d,s,o,f,js,fjs){
-        w['fsUpcomingEmbed'] = o;
-        w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments) };
-        js = d.createElement(s);
-        fjs = d.getElementsByTagName(s)[0];
-        js.id = o;
-        js.src = f;
-        js.async = 1;
-        fjs.parentNode.insertBefore(js, fjs);
-    })(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js'));
+<div id="fs-upcoming"></div>
+<script>
+(function(w,d,s,o,f,js,fjs){
+    w['fsUpcomingEmbed'] = o;
+    w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments) };
+    js = d.createElement(s);
+    fjs = d.getElementsByTagName(s)[0];
+    js.id = o;
+    js.src = f;
+    js.async = 1;
+    fjs.parentNode.insertBefore(js, fjs);
+})(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js'));
 
-    fsUpcoming('params', { teamID: 8673, lang: 'es' });
-
-    setTimeout(function() {
-        const modificarHorario = () => {
-            const fechaElement = document.querySelector('[id^="fsUpcomingTime"]'); 
-            const fechaSpanElement = document.querySelector('[id^="fsUpcomingDate"]');
-
-            if (fechaElement) {
-                let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
-                const fechaParts = fechaGMT.split(':');
-                const now = new Date();
-                
-                now.setHours(parseInt(fechaParts[0], 10));
-                now.setMinutes(parseInt(fechaParts[1], 10));
-                now.setSeconds(0);
-                now.setHours(now.getHours() - 5); 
-
-                const opciones = { hour: '2-digit', minute: '2-digit' };
-                fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
-            }
-
-            if (fechaSpanElement) {
-                let fechaGMT = fechaSpanElement.textContent.trim();
-                const fechaParts = fechaGMT.split(' ')[0].split('/');  
-                
-                const fecha = new Date();
-                fecha.setDate(parseInt(fechaParts[0], 10));
-                fecha.setMonth(parseInt(fechaParts[1], 10) - 1);
-                fecha.setFullYear(new Date().getFullYear());
-                fecha.setHours(fecha.getHours() - 5);
-
-                const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
-                fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-            }
-        };
-
-        modificarHorario();
-    }, 3000);  
-    </script>
-</body>
-</html>
+fsUpcoming('params', { teamID: 8673, lang: 'es' });
+</script>
