@@ -21,38 +21,39 @@
 
     fsUpcoming('params', { teamID: 8673, lang: 'es' });
 
-    function ajustarHorario() {
-        let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
-        let elementoFecha = document.querySelector('#fsUpcomingDate');
+   function ajustarFechaHora() {
+    let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
+    let elementosFecha = document.querySelectorAll('[id*="fsUpcomingDate"], .fs-fixture-date'); 
 
-        if (elementoFecha && elementoFecha.textContent.trim() !== '') {
-            let partesFecha = elementoFecha.textContent.match(/(\d{1,2})\/(\d{1,2})/); // Extraer día y mes "4/6"
-            if (partesFecha) {
-                let fecha = new Date(Date.UTC(2025, parseInt(partesFecha[2]) - 1, parseInt(partesFecha[1])));
+    elementosHora.forEach(element => {
+        let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); 
 
-                // Ajustar la fecha según la zona horaria de Colombia
-                fecha.setUTCHours(fecha.getUTCHours() - 5);
+        if (horaTexto) {
+            let partesHora = horaTexto[0].split(':');
+            let fecha = new Date();
+            fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
+            fecha.setHours(fecha.getHours() - 5); // Ajuste a Colombia (GMT-5)
 
-                let opcionesFecha = { day: '2-digit', month: 'long', year: 'numeric', timeZone: 'America/Bogota' };
-                elementoFecha.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-            }
+            let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true };
+            element.textContent = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
         }
+    });
 
-        elementosHora.forEach(element => {
-            let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); // Extraer la hora correctamente
-            if (horaTexto) {
-                let partesHora = horaTexto[0].split(':');
-                let fecha = new Date();
-                fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
+    elementosFecha.forEach(element => {
+        let fechaTexto = element.textContent.trim().match(/\d{1,2}\/\d{1,2}/); 
 
-                // Ajustar la hora según la zona horaria de Colombia
-                fecha.setHours(fecha.getHours() - 5);
+        if (fechaTexto) {
+            let partesFecha = fechaTexto[0].split('/');
+            let fecha = new Date();
+            fecha.setUTCDate(parseInt(partesFecha[0]));
+            fecha.setUTCMonth(parseInt(partesFecha[1]) - 1);
+            fecha.setHours(fecha.getHours() - 5); // Ajuste de zona horaria
 
-                let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Bogota' };
-                element.textContent = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
-            }
-        });
-    }
+            let opcionesFecha = { day: '2-digit', month: 'long', year: 'numeric' };
+            element.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+        }
+    });
+}
 
     setTimeout(ajustarHorario, 3000);
     </script>
