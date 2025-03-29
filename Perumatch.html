@@ -23,34 +23,28 @@
 
     function ajustarHorario() {
         let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
+        let elementoFecha = document.querySelector('[id="fsUpcomingDate"]');
 
         elementosHora.forEach(element => {
-            let textoOriginal = element.textContent.trim();
-            let fechaHoraTexto = textoOriginal.match(/\d{1,2}:\d{2}/); // Extraer hora
-            let fechaTexto = textoOriginal.match(/\d{1,2}\/\d{1,2}\/\d{4}/); // Extraer fecha si está presente
+            let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); // Extraer la hora correctamente
 
-            if (fechaHoraTexto) {
-                let partesHora = fechaHoraTexto[0].split(':');
+            if (horaTexto) {
+                let partesHora = horaTexto[0].split(':');
                 let fecha = new Date();
-
-                if (fechaTexto) {
-                    let partesFecha = fechaTexto[0].split('/');
-                    fecha.setUTCFullYear(parseInt(partesFecha[2]), parseInt(partesFecha[1]) - 1, parseInt(partesFecha[0]));
-                }
-
                 fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
-                
-                // Convertir de UTC a Colombia (GMT-5)
-                fecha.setMinutes(fecha.getMinutes() - (5 * 60));
+                fecha.setHours(fecha.getHours() - 5); // Ajuste de GMT a Colombia (GMT-5)
 
-                // Formato Colombia: "Día Mes Año - HH:mm (hora de Colombia)"
-                let opcionesFecha = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
                 let opcionesHora = { hour: '2-digit', minute: '2-digit', hour12: false };
+                element.textContent = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
 
-                let fechaFormateada = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-                let horaFormateada = new Intl.DateTimeFormat('es-CO', opcionesHora).format(fecha);
+                // Ajustar la fecha si cambia por el huso horario
+                if (elementoFecha) {
+                    let opcionesFecha = { day: 'numeric', month: 'numeric', weekday: 'long' };
+                    let fechaTexto = new Intl.DateTimeFormat('en-US', opcionesFecha).format(fecha);
 
-                element.textContent = `${fechaFormateada} - ${horaFormateada} (hora de Colombia)`;
+                    let partes = fechaTexto.split(', '); // Separar "4/6, Wednesday"
+                    elementoFecha.textContent = `${partes[0]} ${partes[1]}`;
+                }
             }
         });
     }
