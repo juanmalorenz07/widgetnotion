@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximos Partidos</title>
+    <title>Próximos Partidos - Perú</title>
 </head>
 <body>
     <div id="fs-upcoming"></div>
@@ -25,46 +25,32 @@
         setTimeout(function() {
             const fechaElement = document.querySelector('#fsUpcomingTime');
             const fechaSpanElement = document.querySelector('#fsUpcomingDate');
-            
+
             if (fechaElement) {
                 let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
                 const fechaParts = fechaGMT.split(':');
                 const now = new Date();
-                now.setHours(fechaParts[0]);
-                now.setMinutes(fechaParts[1]);
+                now.setHours(parseInt(fechaParts[0], 10));
+                now.setMinutes(parseInt(fechaParts[1], 10));
                 now.setSeconds(0);
                 now.setHours(now.getHours() - 5);  // Ajuste a Colombia (GMT-5)
 
-                if (!isNaN(now)) {
-                    const opciones = {
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    };
-                    const fechaColombia = new Intl.DateTimeFormat('es-CO', opciones).format(now);
-                    fechaElement.textContent = fechaColombia;
-                }
+                const opciones = { hour: '2-digit', minute: '2-digit' };
+                fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
             }
 
             if (fechaSpanElement) {
                 let fechaGMT = fechaSpanElement.textContent.trim();
-                const partesFecha = fechaGMT.split(' ');
-                const fechaParts = partesFecha[0].split('/');  // Formato dd/mm
-                const fecha = new Date();
-                fecha.setDate(fechaParts[0]);
-                fecha.setMonth(fechaParts[1] - 1);  // Los meses en JavaScript son 0-indexed
-                fecha.setFullYear(2025);  // Cambiar según el año si es necesario
+                const fechaParts = fechaGMT.split(' ')[0].split('/');  // Formato dd/mm
 
+                const fecha = new Date();
+                fecha.setDate(parseInt(fechaParts[0], 10));
+                fecha.setMonth(parseInt(fechaParts[1], 10) - 1);
+                fecha.setFullYear(new Date().getFullYear());
                 fecha.setHours(fecha.getHours() - 5);
 
-                if (!isNaN(fecha)) {
-                    const opcionesFecha = {
-                        day: '2-digit',
-                        month: 'short',
-                        year: 'numeric'
-                    };
-                    const fechaColombia = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-                    fechaSpanElement.textContent = fechaColombia;
-                }
+                const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
+                fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
             }
         }, 2000);
     };
