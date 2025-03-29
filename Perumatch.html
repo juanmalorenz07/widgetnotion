@@ -21,19 +21,20 @@
 
     fsUpcoming('params', { teamID: 8673, lang: 'es' });
 
-    window.onload = function() {
-        setTimeout(function() {
-            const fechaElement = document.querySelector('#fsUpcomingTime');
-            const fechaSpanElement = document.querySelector('#fsUpcomingDate');
+    setTimeout(function() {
+        const modificarHorario = () => {
+            const fechaElement = document.querySelector('[id^="fsUpcomingTime"]'); 
+            const fechaSpanElement = document.querySelector('[id^="fsUpcomingDate"]');
 
             if (fechaElement) {
                 let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
                 const fechaParts = fechaGMT.split(':');
                 const now = new Date();
+                
                 now.setHours(parseInt(fechaParts[0], 10));
                 now.setMinutes(parseInt(fechaParts[1], 10));
                 now.setSeconds(0);
-                now.setHours(now.getHours() - 5);  // Ajuste a Colombia (GMT-5)
+                now.setHours(now.getHours() - 5); 
 
                 const opciones = { hour: '2-digit', minute: '2-digit' };
                 fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
@@ -41,8 +42,8 @@
 
             if (fechaSpanElement) {
                 let fechaGMT = fechaSpanElement.textContent.trim();
-                const fechaParts = fechaGMT.split(' ')[0].split('/');  // Formato dd/mm
-
+                const fechaParts = fechaGMT.split(' ')[0].split('/');  
+                
                 const fecha = new Date();
                 fecha.setDate(parseInt(fechaParts[0], 10));
                 fecha.setMonth(parseInt(fechaParts[1], 10) - 1);
@@ -52,8 +53,10 @@
                 const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
                 fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
             }
-        }, 2000);
-    };
+        };
+
+        modificarHorario();
+    }, 3000);  
     </script>
 </body>
 </html>
