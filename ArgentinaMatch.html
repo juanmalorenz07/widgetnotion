@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximos Partidos - Argentina</title>
+</head>
+<body>
+    <div id="fs-upcoming"></div>
+    <script>
+    (function(w, d, s, o, f, js, fjs) {
+        w['fsUpcomingEmbed'] = o;
+        w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments); };
+        js = d.createElement(s);
+        fjs = d.getElementsByTagName(s)[0];
+        js.id = o;
+        js.src = f;
+        js.async = 1;
+        fjs.parentNode.insertBefore(js, fjs);
+    })(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js');
+
+    fsUpcoming('params', { teamID: 8625, lang: 'es' });
+
+   window.onload = function() {
+    setTimeout(function() {
+        const fechaElement = document.querySelector('#fsUpcomingTime');
+        const fechaSpanElement = document.querySelector('#fsUpcomingDate');
+        
+        if (fechaElement) {
+            let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
+            const fechaParts = fechaGMT.split(':');
+            const now = new Date();
+            now.setHours(fechaParts[0]);
+            now.setMinutes(fechaParts[1]);
+            now.setSeconds(0);
+            now.setHours(now.getHours() - 5);  // Ajuste a Colombia (GMT-5)
+
+            if (!isNaN(now)) {
+                const opciones = {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                const fechaColombia = new Intl.DateTimeFormat('es-CO', opciones).format(now);
+                fechaElement.textContent = fechaColombia;
+            }
+        }
+
+        if (fechaSpanElement) {
+            let fechaGMT = fechaSpanElement.textContent.trim();
+            const partesFecha = fechaGMT.split(' ');
+            const fechaParts = partesFecha[0].split('/');  // Formato dd/mm
+            const fecha = new Date();
+            fecha.setDate(fechaParts[0]);
+            fecha.setMonth(fechaParts[1] - 1);  // Los meses en JavaScript son 0-indexed
+            fecha.setFullYear(2025);  // Cambiar según el año si es necesario
+
+            fecha.setHours(fecha.getHours() - 5);
+
+            if (!isNaN(fecha)) {
+                const opcionesFecha = {
+                    day: '2-digit',
+                    month: 'short',
+                    year: 'numeric'
+                };
+                const fechaColombia = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+                fechaSpanElement.textContent = fechaColombia;
+            }
+        }
+    }, 2000);
+};
+</script>
+</body>
+</html>
