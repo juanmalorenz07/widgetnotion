@@ -1,2 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Próximos Partidos - Perú</title>
+</head>
+<body>
+    <div id="fs-upcoming"></div>
+    <script>
+    (function(w,d,s,o,f,js,fjs){
+        w['fsUpcomingEmbed'] = o;
+        w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments) };
+        js = d.createElement(s);
+        fjs = d.getElementsByTagName(s)[0];
+        js.id = o;
+        js.src = f;
+        js.async = 1;
+        fjs.parentNode.insertBefore(js, fjs);
+    })(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js'));
 
-<div id="fs-upcoming"></div> <script> (function (w,d,s,o,f,js,fjs) { w['fsUpcomingEmbed']=o;w[o] = w[o] || function () { (w[o].q = w[o].q || []).push(arguments) }; js = d.createElement(s), fjs = d.getElementsByTagName(s)[0]; js.id = o; js.src = f; js.async = 1; fjs.parentNode.insertBefore(js, fjs); }(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js')); fsUpcoming('params', { teamID: 8673, lang: 'es' }); </script>
+    fsUpcoming('params', { teamID: 8673, lang: 'es' });
+
+    setTimeout(function() {
+        document.querySelectorAll('.fs-fixture-time').forEach(element => {
+            let horaGMT = element.textContent.trim().replace(' (GMT)', '');
+            let partesHora = horaGMT.split(':');
+
+            if (partesHora.length === 2) {
+                let fecha = new Date();
+                fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
+                fecha.setHours(fecha.getHours() - 5); // Convertir de GMT a Colombia (GMT-5)
+
+                let opciones = { hour: '2-digit', minute: '2-digit', hour12: false };
+                element.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(fecha);
+            }
+        });
+    }, 3000);
+    </script>
+</body>
+</html>
