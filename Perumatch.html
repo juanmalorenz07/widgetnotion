@@ -8,9 +8,9 @@
 <body>
     <div id="fs-upcoming"></div>
     <script>
-    (function(w,d,s,o,f,js,fjs){
+    (function(w, d, s, o, f, js, fjs) {
         w['fsUpcomingEmbed'] = o;
-        w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments) };
+        w[o] = w[o] || function() { (w[o].q = w[o].q || []).push(arguments); };
         js = d.createElement(s);
         fjs = d.getElementsByTagName(s)[0];
         js.id = o;
@@ -22,38 +22,26 @@
     fsUpcoming('params', { teamID: 8673, lang: 'es' });
 
     function ajustarHorario() {
-        const fechaElement = document.querySelector('#fsUpcomingTime');
-        const fechaSpanElement = document.querySelector('#fsUpcomingDate');
+        let elementosHora = document.querySelectorAll('[id*="fsUpcomingTime"], .fs-fixture-time, .match-time'); 
 
-        if (fechaElement) {
-            let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
-            const fechaParts = fechaGMT.split(':');
-            const now = new Date();
-            now.setUTCHours(fechaParts[0], fechaParts[1], 0);
-            now.setHours(now.getHours() - 5);
+        elementosHora.forEach(element => {
+            let horaTexto = element.textContent.trim().match(/\d{1,2}:\d{2}/); // Extraer la hora correctamente
 
-            if (!isNaN(now)) {
-                const opciones = { hour: '2-digit', minute: '2-digit', hour12: false };
-                fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
+            if (horaTexto) {
+                let partesHora = horaTexto[0].split(':');
+                let fecha = new Date();
+                fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
+                fecha.setHours(fecha.getHours() - 5); // Ajuste de GMT a Colombia (GMT-5)
+
+                let opciones = { hour: '2-digit', minute: '2-digit', hour12: false };
+                element.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(fecha);
             }
-        }
-
-        if (fechaSpanElement) {
-            let fechaTexto = fechaSpanElement.textContent.trim();
-            let partesFecha = fechaTexto.split(' ')[0].split('/');
-            let fecha = new Date();
-            fecha.setUTCDate(partesFecha[0]);
-            fecha.setUTCMonth(partesFecha[1] - 1);
-            fecha.setHours(fecha.getHours() - 5);
-
-            if (!isNaN(fecha)) {
-                const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
-                fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-            }
-        }
+        });
     }
 
-    setTimeout(ajustarHorario, 3000);
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(ajustarHorario, 3000);
+    });
     </script>
 </body>
 </html>
