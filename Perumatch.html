@@ -21,21 +21,39 @@
 
     fsUpcoming('params', { teamID: 8673, lang: 'es' });
 
-    setTimeout(function() {
-        document.querySelectorAll('.fs-fixture-time').forEach(element => {
-            let horaGMT = element.textContent.trim().replace(' (GMT)', '');
-            let partesHora = horaGMT.split(':');
+    function ajustarHorario() {
+        const fechaElement = document.querySelector('#fsUpcomingTime');
+        const fechaSpanElement = document.querySelector('#fsUpcomingDate');
 
-            if (partesHora.length === 2) {
-                let fecha = new Date();
-                fecha.setUTCHours(parseInt(partesHora[0]), parseInt(partesHora[1]), 0);
-                fecha.setHours(fecha.getHours() - 5); // Convertir de GMT a Colombia (GMT-5)
+        if (fechaElement) {
+            let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
+            const fechaParts = fechaGMT.split(':');
+            const now = new Date();
+            now.setUTCHours(fechaParts[0], fechaParts[1], 0);
+            now.setHours(now.getHours() - 5);
 
-                let opciones = { hour: '2-digit', minute: '2-digit', hour12: false };
-                element.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(fecha);
+            if (!isNaN(now)) {
+                const opciones = { hour: '2-digit', minute: '2-digit', hour12: false };
+                fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
             }
-        });
-    }, 3000);
+        }
+
+        if (fechaSpanElement) {
+            let fechaTexto = fechaSpanElement.textContent.trim();
+            let partesFecha = fechaTexto.split(' ')[0].split('/');
+            let fecha = new Date();
+            fecha.setUTCDate(partesFecha[0]);
+            fecha.setUTCMonth(partesFecha[1] - 1);
+            fecha.setHours(fecha.getHours() - 5);
+
+            if (!isNaN(fecha)) {
+                const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
+                fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
+            }
+        }
+    }
+
+    setTimeout(ajustarHorario, 3000);
     </script>
 </body>
 </html>
