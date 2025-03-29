@@ -21,54 +21,10 @@
         fjs.parentNode.insertBefore(js, fjs);
     })(window, document, 'script', 'fsUpcoming', 'https://cdn.footystats.org/embeds/upcoming-loc.js');
 
-    // Cargar partidos de Colombia
-    fsUpcoming('params', { teamID: 8638, lang: 'es', containerID: 'fs-upcoming-col' });
-
-    // Cargar partidos de Perú
-    fsUpcoming('params', { teamID: 8673, lang: 'es', containerID: 'fs-upcoming-per' });
-
-    window.onload = function() {
-        setTimeout(function() {
-            ajustarHora('#fs-upcoming-col');
-            ajustarHora('#fs-upcoming-per');
-        }, 2000);
-    };
-
-    function ajustarHora(selector) {
-        const fechaElement = document.querySelector(`${selector} #fsUpcomingTime`);
-        const fechaSpanElement = document.querySelector(`${selector} #fsUpcomingDate`);
-        
-        if (fechaElement) {
-            let fechaGMT = fechaElement.textContent.trim().replace(' (GMT)', '');
-            const fechaParts = fechaGMT.split(':');
-            const now = new Date();
-            now.setHours(fechaParts[0]);
-            now.setMinutes(fechaParts[1]);
-            now.setSeconds(0);
-            now.setHours(now.getHours() - 5); // Ajuste a GMT-5
-
-            if (!isNaN(now)) {
-                const opciones = { hour: '2-digit', minute: '2-digit' };
-                fechaElement.textContent = new Intl.DateTimeFormat('es-CO', opciones).format(now);
-            }
-        }
-
-        if (fechaSpanElement) {
-            let fechaGMT = fechaSpanElement.textContent.trim();
-            const partesFecha = fechaGMT.split(' ');
-            const fechaParts = partesFecha[0].split('/');
-            const fecha = new Date();
-            fecha.setDate(fechaParts[0]);
-            fecha.setMonth(fechaParts[1] - 1);
-            fecha.setFullYear(2025);
-            fecha.setHours(fecha.getHours() - 5);
-
-            if (!isNaN(fecha)) {
-                const opcionesFecha = { day: '2-digit', month: 'short', year: 'numeric' };
-                fechaSpanElement.textContent = new Intl.DateTimeFormat('es-CO', opcionesFecha).format(fecha);
-            }
-        }
-    }
+    setTimeout(function() {
+        fsUpcoming('params', { teamID: 8638, lang: 'es' }); // Colombia
+        fsUpcoming('params', { teamID: 8673, lang: 'es' }); // Perú
+    }, 500);
     </script>
 </body>
 </html>
